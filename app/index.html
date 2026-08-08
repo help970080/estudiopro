@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F1117">
+<title>EstudiaPro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fondo:#0F1117; --sup:#191D26; --sup2:#222733; --borde:#2C3240;
+  --tinta:#F2F0E9; --tinta-2:#A8AFBD; --tinta-3:#6B7280;
+  --marca:#E8E34A; --menta:#6EE7A8; --alerta:#FF6B5B;
+  --serif:'Fraunces',Georgia,serif; --sans:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --barra:calc(62px + env(safe-area-inset-bottom));
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--fondo);color:var(--tinta);font:400 16px/1.55 var(--sans);
+  min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:none}
+:focus-visible{outline:2.5px solid var(--marca);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ── Encabezado ── */
+header{padding:calc(12px + env(safe-area-inset-top)) 18px 12px;display:flex;
+  align-items:center;gap:12px;border-bottom:1px solid var(--borde);
+  position:sticky;top:0;z-index:30;background:var(--fondo)}
+header h1{font:900 22px/1 var(--serif);font-variation-settings:'opsz' 100;letter-spacing:-.02em}
+header h1 em{font-weight:400;font-style:italic}
+.volver{font-size:22px;line-height:1;padding:2px 6px 2px 0;color:var(--tinta-2);display:none}
+.der{margin-left:auto;display:flex;gap:8px;align-items:center}
+.chip{font:500 10.5px/1 var(--mono);padding:5px 8px;border:1px solid var(--borde);
+  border-radius:20px;color:var(--tinta-3);white-space:nowrap}
+.chip.ok{border-color:var(--menta);color:var(--menta)}
+.icono-btn{width:36px;height:36px;border-radius:10px;background:var(--sup);
+  display:grid;place-items:center;font-size:17px}
+
+main{flex:1;padding:18px 18px calc(var(--barra) + 24px);max-width:760px;
+  width:100%;margin:0 auto;min-height:0}
+
+/* ── Captura ── */
+.rotulo{font:500 10.5px/1 var(--mono);text-transform:uppercase;letter-spacing:.16em;
+  color:var(--tinta-3);margin:26px 0 12px;display:flex;justify-content:space-between}
+.rotulo:first-child{margin-top:0}
+
+.modos{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;
+  scrollbar-width:none}
+.modos::-webkit-scrollbar{display:none}
+.modo{font:500 13.5px/1 var(--sans);padding:10px 15px;border-radius:22px;flex:none;
+  background:var(--sup);color:var(--tinta-2);border:1.5px solid transparent;
+  transition:background .12s}
+.modo[aria-pressed="true"]{background:var(--marca);color:#151515;font-weight:600}
+
+.campo{width:100%;padding:14px 15px;border:1.5px solid var(--borde);border-radius:13px;
+  background:var(--sup);margin-bottom:10px;font-size:15px}
+.campo::placeholder{color:var(--tinta-3)}
+.campo:focus{border-color:var(--marca);outline:none}
+textarea.campo{min-height:140px;resize:vertical;line-height:1.5}
+.fila{display:flex;gap:10px}
+.fila>.campo{flex:1;min-width:0}
+
+.btn{font:600 15px/1 var(--sans);padding:14px 22px;border-radius:13px;
+  background:var(--marca);color:#151515;width:100%;transition:transform .08s}
+.btn:active{transform:scale(.985)}
+.btn:disabled{opacity:.4}
+.btn.fantasma{background:var(--sup);color:var(--tinta);border:1.5px solid var(--borde)}
+.btn.chico{font-size:13px;padding:10px 15px;width:auto;border-radius:11px}
+
+/* ── Grabadora ── */
+.grabadora{display:flex;flex-direction:column;align-items:center;gap:18px;padding:20px 0}
+.rec{width:78px;height:78px;border-radius:50%;background:var(--alerta);flex:none;
+  display:grid;place-items:center;box-shadow:0 0 0 0 rgba(255,107,91,.5)}
+.rec[data-on="true"]{animation:pulso 2s infinite}
+@keyframes pulso{70%{box-shadow:0 0 0 18px rgba(255,107,91,0)}100%{box-shadow:0 0 0 0 rgba(255,107,91,0)}}
+.rec span{width:26px;height:26px;background:#fff;border-radius:50%;transition:all .2s}
+.rec[data-on="true"] span{border-radius:5px;width:22px;height:22px}
+.onda{width:100%;height:48px;display:flex;align-items:center;gap:2.5px;overflow:hidden}
+.onda i{flex:1;background:var(--marca);min-height:3px;border-radius:2px;
+  transform:scaleY(.1);transform-origin:center;transition:transform .09s ease-out}
+.reloj{font:500 30px/1 var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+
+/* ── Lista de sesiones ── */
+.tarjeta-sesion{display:flex;align-items:center;gap:12px;background:var(--sup);
+  border-radius:15px;padding:15px 16px;margin-bottom:9px;border:1.5px solid transparent}
+.tarjeta-sesion:active{border-color:var(--borde)}
+.ts-cuerpo{flex:1;min-width:0;text-align:left}
+.ts-titulo{font-weight:600;font-size:15.5px;line-height:1.3;margin-bottom:5px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ts-meta{font:400 11.5px/1 var(--mono);color:var(--tinta-3);display:flex;gap:7px;
+  align-items:center;flex-wrap:wrap}
+.punto{width:3px;height:3px;border-radius:50%;background:var(--tinta-3);flex:none}
+.avance{width:34px;height:34px;flex:none;position:relative}
+.avance svg{transform:rotate(-90deg)}
+.avance b{position:absolute;inset:0;display:grid;place-items:center;
+  font:500 9.5px var(--mono);color:var(--tinta-2)}
+.tirar{width:34px;height:34px;flex:none;border-radius:10px;color:var(--tinta-3);
+  font-size:20px;display:grid;place-items:center}
+.tirar:active{background:var(--sup2);color:var(--alerta)}
+
+/* ── Camino de secciones ── */
+.cabeza h2{font:600 26px/1.2 var(--serif);font-variation-settings:'opsz' 60;
+  letter-spacing:-.015em;margin-bottom:9px}
+.cabeza .meta{font:400 11.5px/1 var(--mono);color:var(--tinta-3);display:flex;
+  gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+
+.barra-avance{height:7px;background:var(--sup);border-radius:5px;overflow:hidden;margin-bottom:6px}
+.barra-avance i{display:block;height:100%;background:var(--marca);border-radius:5px;
+  transition:width .4s cubic-bezier(.4,0,.2,1)}
+.avance-txt{font:500 11.5px var(--mono);color:var(--tinta-3);display:flex;
+  justify-content:space-between;margin-bottom:24px}
+
+.camino{position:relative;padding-left:6px}
+.nodo{display:flex;gap:16px;align-items:flex-start;padding-bottom:22px;position:relative}
+.nodo::before{content:'';position:absolute;left:23px;top:46px;bottom:-2px;width:2px;
+  background:var(--borde)}
+.nodo:last-child::before{display:none}
+.nodo.hecho::before{background:var(--marca)}
+.bolita{width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:var(--sup);border:2px solid var(--borde);font:600 15px var(--mono);
+  color:var(--tinta-3);position:relative;z-index:1}
+.nodo.hecho .bolita{background:var(--marca);border-color:var(--marca);color:#151515}
+.nodo.activo .bolita{border-color:var(--marca);color:var(--marca);
+  box-shadow:0 0 0 5px rgba(232,227,74,.13)}
+.nodo-txt{flex:1;padding-top:3px;text-align:left;min-width:0}
+.nodo-n{font:500 10px/1 var(--mono);letter-spacing:.14em;color:var(--tinta-3);
+  text-transform:uppercase;margin-bottom:5px}
+.nodo.activo .nodo-n,.nodo.hecho .nodo-n{color:var(--marca)}
+.nodo-t{font-weight:600;font-size:15.5px;line-height:1.35}
+.nodo.pendiente .nodo-t{color:var(--tinta-2)}
+
+/* ── Contenido de secciones ── */
+.notas{font-size:16px;line-height:1.65}
+.notas h2{font:600 21px/1.25 var(--serif);margin:28px 0 12px;color:var(--tinta)}
+.notas h2:first-child{margin-top:0}
+.notas h3{font:600 16.5px/1.3 var(--sans);margin:20px 0 8px}
+.notas ul{margin:0 0 14px 20px}
+.notas li{margin-bottom:7px}
+.notas p{margin-bottom:14px}
+.notas blockquote{border-left:3px solid var(--marca);padding:8px 0 8px 15px;margin:16px 0;
+  background:var(--sup);border-radius:0 10px 10px 0;padding-right:14px}
+.notas code{font:400 13.5px var(--mono);background:var(--sup2);padding:2px 6px;border-radius:5px}
+.notas strong{font-weight:700;color:var(--marca)}
+
+/* ── Quiz ── */
+.preg{margin-bottom:26px}
+.preg .n{font:500 10.5px/1 var(--mono);color:var(--marca);letter-spacing:.16em;
+  margin-bottom:11px;text-transform:uppercase}
+.preg .q{font-weight:600;font-size:19px;line-height:1.35;margin-bottom:18px;
+  font-family:var(--sans)}
+.op{display:block;width:100%;text-align:center;padding:17px 16px;border-radius:15px;
+  background:var(--sup);border:1.5px solid var(--borde);margin-bottom:10px;
+  font-size:15px;line-height:1.4;transition:transform .08s}
+.op:active:not(:disabled){transform:scale(.985)}
+.op.bien{border-color:var(--menta);background:rgba(110,231,168,.12);color:var(--menta)}
+.op.mal{border-color:var(--alerta);background:rgba(255,107,91,.1);color:var(--alerta)}
+.porque{font-size:14.5px;line-height:1.55;padding:14px 15px;background:var(--sup);
+  border-radius:13px;margin-top:6px;color:var(--tinta-2)}
+.marcador{position:sticky;bottom:calc(var(--barra) + 8px);background:var(--sup);
+  border-radius:14px;padding:14px 18px;display:flex;justify-content:space-between;
+  align-items:center;font:500 14px var(--mono);border:1.5px solid var(--borde);margin-top:20px}
+
+/* ── Flashcards ── */
+.opciones-num{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.op-num{background:var(--sup);border:1.5px solid var(--borde);border-radius:15px;
+  padding:18px 12px;text-align:center}
+.op-num[aria-pressed="true"]{border-color:var(--marca);background:rgba(232,227,74,.08)}
+.op-num b{display:block;font:700 26px/1 var(--sans);margin-bottom:5px}
+.op-num[aria-pressed="true"] b{color:var(--marca)}
+.op-num span{font-size:12.5px;color:var(--tinta-3)}
+
+.baraja{display:flex;flex-direction:column;align-items:center;gap:20px}
+.carta{width:100%;max-width:440px;height:290px;perspective:1400px}
+.cara-cont{position:relative;width:100%;height:100%;transition:transform .5s cubic-bezier(.4,.1,.2,1);
+  transform-style:preserve-3d}
+.carta[data-volteada="true"] .cara-cont{transform:rotateY(180deg)}
+.cara{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;
+  padding:34px 26px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;background:var(--sup);
+  border:1.5px solid var(--borde)}
+.cara.atras{transform:rotateY(180deg);background:var(--sup2);border-color:var(--marca)}
+.cara .tema{font:500 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.16em;
+  color:var(--marca);position:absolute;top:20px;left:0;right:0}
+.cara .txt{font:400 22px/1.35 var(--serif);font-variation-settings:'opsz' 40}
+.cara.atras .txt{font-family:var(--sans);font-size:17px;line-height:1.5}
+.cara .pista{font:400 11px/1 var(--mono);color:var(--tinta-3);position:absolute;bottom:18px}
+.mandos{display:flex;gap:10px;width:100%;max-width:440px}
+.mandos .btn{flex:1}
+.pos{font:500 13px var(--mono);color:var(--tinta-3);text-align:center}
+
+/* ── Podcast ── */
+.pod audio{width:100%;margin:18px 0;border-radius:12px}
+.turno{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--borde);font-size:15px}
+.turno:last-child{border:none}
+.turno .voz{font:500 10.5px/1.7 var(--mono);flex:none;width:44px;color:var(--marca)}
+.turno.b .voz{color:var(--menta)}
+
+/* ── Barra inferior ── */
+nav.abajo{position:fixed;bottom:0;left:0;right:0;z-index:40;display:none;
+  background:rgba(15,17,23,.94);backdrop-filter:blur(14px);
+  border-top:1px solid var(--borde);padding-bottom:env(safe-area-inset-bottom)}
+nav.abajo.visible{display:flex}
+nav.abajo button{flex:1;padding:9px 2px 10px;display:flex;flex-direction:column;
+  align-items:center;gap:4px;font:500 10px var(--sans);color:var(--tinta-3)}
+nav.abajo button i{font-style:normal;font-size:20px;line-height:1;opacity:.55;
+  transition:opacity .12s,transform .12s}
+nav.abajo button[aria-selected="true"]{color:var(--marca)}
+nav.abajo button[aria-selected="true"] i{opacity:1;transform:translateY(-1px)}
+nav.abajo .listo-pt{position:absolute;top:7px;margin-left:19px;width:6px;height:6px;
+  border-radius:50%;background:var(--menta)}
+
+/* ── Varios ── */
+.vacio{padding:44px 22px;text-align:center;background:var(--sup);border-radius:18px}
+.vacio p{color:var(--tinta-2);margin-bottom:20px;font-size:15px;line-height:1.5}
+.vacio .emo{font-size:36px;display:block;margin-bottom:14px;opacity:.85}
+.cargando{display:flex;flex-direction:column;align-items:center;gap:14px;padding:52px 0;
+  font:400 14px var(--mono);color:var(--tinta-3);text-align:center}
+.giro{width:26px;height:26px;border:2.5px solid var(--borde);border-top-color:var(--marca);
+  border-radius:50%;animation:g .75s linear infinite}
+@keyframes g{to{transform:rotate(360deg)}}
+.error{background:rgba(255,107,91,.1);border:1.5px solid var(--alerta);border-radius:13px;
+  padding:14px 16px;color:var(--alerta);font-size:14.5px;margin-bottom:16px;line-height:1.45}
+.pend{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  background:var(--sup);border:1.5px solid var(--marca);border-radius:14px;
+  padding:14px 15px;margin-bottom:9px}
+.barra-sub{height:6px;background:var(--sup);border-radius:4px;overflow:hidden;margin-top:10px}
+.barra-sub i{display:block;height:100%;background:var(--marca);width:0;transition:width .25s}
+.oculto{display:none!important}
+</style>
+</head>
+<body>
+
+<header>
+  <button class="volver" id="volver" aria-label="Volver">‹</button>
+  <h1>Estudia<em>Pro</em></h1>
+  <div class="der">
+    <span class="chip" id="estado">…</span>
+    <button class="icono-btn" id="btnConfig" aria-label="Ajustes">⚙</button>
+  </div>
+</header>
+
+<main>
+  <div id="alerta"></div>
+
+  <!-- Pantalla 1: captura + lista -->
+  <div id="inicio">
+    <div class="modos" role="group" aria-label="Fuente del material">
+      <button class="modo" data-modo="grabar" aria-pressed="true">🎙 Grabar clase</button>
+      <button class="modo" data-modo="audio" aria-pressed="false">🎧 Subir audio</button>
+      <button class="modo" data-modo="pdf" aria-pressed="false">📄 PDF</button>
+      <button class="modo" data-modo="link" aria-pressed="false">🔗 Link o video</button>
+      <button class="modo" data-modo="texto" aria-pressed="false">✍️ Pegar texto</button>
+    </div>
+
+    <div class="fila">
+      <input class="campo" id="titulo" placeholder="Título">
+      <input class="campo" id="materia" placeholder="Materia" style="max-width:38%">
+    </div>
+
+    <div id="mGrabar">
+      <div class="grabadora">
+        <div class="reloj" id="reloj">00:00</div>
+        <div class="onda" id="onda"></div>
+        <button class="rec" id="btnRec" data-on="false" aria-label="Grabar"><span></span></button>
+      </div>
+      <p style="font:400 12.5px/1.5 var(--mono);color:var(--tinta-3);text-align:center">
+        Sigue grabando con la pantalla apagada.
+      </p>
+    </div>
+
+    <div id="mAudio" class="oculto">
+      <input type="file" class="campo" id="archAudio" accept="audio/*,video/*">
+      <button class="btn" id="btnAudio">Transcribir</button>
+    </div>
+
+    <div id="mPdf" class="oculto">
+      <input type="file" class="campo" id="archPdf" accept="application/pdf">
+      <button class="btn" id="btnPdf">Leer PDF</button>
+    </div>
+
+    <div id="mLink" class="oculto">
+      <input class="campo" id="url" placeholder="https://… o link de YouTube">
+      <button class="btn" id="btnLink">Traer contenido</button>
+    </div>
+
+    <div id="mTexto" class="oculto">
+      <textarea class="campo" id="pegado" placeholder="Pega aquí el texto"></textarea>
+      <button class="btn" id="btnTexto">Guardar</button>
+    </div>
+
+    <div id="progreso"></div>
+    <div id="pendientes"></div>
+
+    <div class="rotulo"><span>Tus sesiones</span><span id="conteo"></span></div>
+    <div id="lista"></div>
+  </div>
+
+  <!-- Pantalla 2: sesión -->
+  <div id="sesion" class="oculto">
+    <div class="cabeza">
+      <h2 id="sTitulo"></h2>
+      <div class="meta" id="sMeta"></div>
+      <div class="barra-avance"><i id="barraAvance"></i></div>
+      <div class="avance-txt"><span id="avanceTxt"></span><span id="avancePct"></span></div>
+    </div>
+    <div id="contenido"></div>
+  </div>
+</main>
+
+<nav class="abajo" id="navAbajo" role="tablist"></nav>
+
+<script>
+/* ───────────────── Config con degradación a memoria ───────────────── */
+const mem = {};
+const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch { mem[k] = v; } };
+const leer = k => { try { return localStorage.getItem(k) ?? mem[k] ?? ''; } catch { return mem[k] || ''; } };
+
+let API = leer('api') || '';
+let TOKEN = leer('token') || 'estudia_dev';
+
+const Cap = window.Capacitor;
+const NATIVO = !!(Cap && Cap.isNativePlatform && Cap.isNativePlatform());
+const Nativa = NATIVO ? Cap.Plugins.Grabadora : null;
+
+const $ = id => document.getElementById(id);
+
+$('btnConfig').onclick = () => {
+  const a = prompt('URL del servidor', API || 'https://estudia.legaxia.uk');
+  if (a !== null) { API = a.trim().replace(/\/$/, ''); guardar('api', API); }
+  const t = prompt('Token', TOKEN);
+  if (t !== null) { TOKEN = t.trim(); guardar('token', TOKEN); }
+  cargarSesiones();
+};
+
+async function api(ruta, opts = {}) {
+  const r = await fetch(API + ruta, {
+    ...opts,
+    headers: { 'x-app-token': TOKEN, ...(opts.body instanceof FormData ? {} : { 'content-type': 'application/json' }), ...opts.headers },
+  });
+  const d = await r.json().catch(() => ({ error: 'Respuesta ilegible del servidor' }));
+  if (!r.ok) throw new Error(d.error || `Error ${r.status}`);
+  return d;
+}
+
+let diagnosticoPendiente = null;
+
+function mostrarDiagnostico(texto) {
+  diagnosticoPendiente = texto;
+  const caja = document.createElement('div');
+  caja.className = 'error';
+  caja.style.cssText = 'border-color:var(--borde);color:var(--tinta-2);background:var(--sup)';
+  caja.innerHTML = `
+    <div style="font:500 11px var(--mono);margin-bottom:9px;letter-spacing:.1em">DIAGNÓSTICO</div>
+    <textarea readonly style="width:100%;height:130px;font:400 11px var(--mono);
+      border:1px solid var(--borde);border-radius:9px;padding:10px;background:var(--fondo);
+      color:var(--tinta-2)"></textarea>
+    <button class="btn fantasma chico" style="margin-top:9px">Copiar</button>`;
+  caja.querySelector('textarea').value = texto;
+  caja.querySelector('button').onclick = () => {
+    navigator.clipboard.writeText(texto).catch(() => {});
+    caja.querySelector('button').textContent = 'Copiado';
+  };
+  $('alerta').appendChild(caja);
+}
+
+function avisar(msg) {
+  $('alerta').innerHTML = msg ? `<div class="error">${msg}</div>` : '';
+  if (msg && diagnosticoPendiente) {
+    const g = diagnosticoPendiente;
+    diagnosticoPendiente = null;
+    mostrarDiagnostico(g);
+    diagnosticoPendiente = null;
+  }
+  if (msg) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function cargando(donde, texto) {
+  $(donde).innerHTML = `<div class="cargando"><div class="giro"></div>${texto}</div>`;
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function md(txt) {
+  return esc(txt)
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/^[-*] (.+)$/gm, '<li>$1</li>')
+    .replace(/^ {2,}[-*] (.+)$/gm, '<li style="margin-left:18px">$1</li>')
+    .replace(/(<li[\s\S]*?<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
+    .split(/\n{2,}/).map(b => /^<(h2|h3|ul|blockquote)/.test(b.trim()) ? b : (b.trim() ? `<p>${b}</p>` : ''))
+    .join('');
+}
+
+/* ──────────────────────── Selector de modo ────────────────────────── */
+const MODOS = ['grabar', 'audio', 'pdf', 'link', 'texto'];
+document.querySelectorAll('.modo').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('.modo').forEach(x => x.setAttribute('aria-pressed', x === b));
+    MODOS.forEach(m => $('m' + m[0].toUpperCase() + m.slice(1)).classList.toggle('oculto', m !== b.dataset.modo));
+    avisar('');
+  };
+});
+
+/* ────────────────────────── Grabadora ─────────────────────────────── */
+const onda = $('onda');
+for (let i = 0; i < 44; i++) onda.appendChild(document.createElement('i'));
+const barras = [...onda.children];
+const historia = new Array(barras.length).fill(0.1);
+let desp = 0;
+
+function empujarNivel(n) {
+  historia[desp % historia.length] = Math.max(0.1, Math.min(1, n));
+  desp++;
+  for (let i = 0; i < barras.length; i++) {
+    barras[i].style.transform = `scaleY(${historia[(desp + i) % historia.length]})`;
+  }
+}
+function apagarOnda() {
+  historia.fill(0.1);
+  barras.forEach(b => b.style.transform = 'scaleY(.1)');
+  $('reloj').textContent = '00:00';
+}
+const reloj = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+
+const Grabador = NATIVO ? {
+  activa: false, pulso: null,
+  async iniciar() {
+    await Nativa.iniciar();
+    this.activa = true;
+    this.pulso = setInterval(async () => {
+      const e = await Nativa.estado();
+      if (!e.grabando) return;
+      $('reloj').textContent = reloj(e.segundos);
+      empujarNivel(e.nivel * 2.6);
+    }, 110);
+  },
+  async detener() {
+    clearInterval(this.pulso);
+    this.activa = false;
+    const r = await Nativa.detener();
+    apagarOnda();
+    return r;
+  },
+} : {
+  activa: false, rec: null, trozos: [], flujo: null, ctx: null, raf: null, cron: null,
+  async iniciar() {
+    this.flujo = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: true },
+    });
+    this.trozos = [];
+    const tipo = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+      ? 'audio/webm;codecs=opus' : 'audio/webm';
+    this.rec = new MediaRecorder(this.flujo, { mimeType: tipo });
+    this.rec.ondataavailable = e => e.data.size && this.trozos.push(e.data);
+    this.rec.start(1000);
+    this.activa = true;
+    const t0 = Date.now();
+    this.cron = setInterval(() => $('reloj').textContent = reloj(Math.floor((Date.now() - t0) / 1000)), 500);
+    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const an = this.ctx.createAnalyser();
+    an.fftSize = 256;
+    this.ctx.createMediaStreamSource(this.flujo).connect(an);
+    const datos = new Uint8Array(an.frequencyBinCount);
+    const paso = () => {
+      an.getByteFrequencyData(datos);
+      empujarNivel(datos.reduce((a, b) => a + b, 0) / datos.length / 255 * 3.4);
+      this.raf = requestAnimationFrame(paso);
+    };
+    paso();
+  },
+  detener() {
+    return new Promise(ok => {
+      this.rec.onstop = () => {
+        this.flujo.getTracks().forEach(t => t.stop());
+        clearInterval(this.cron); cancelAnimationFrame(this.raf);
+        this.ctx.close(); this.ctx = null; this.activa = false;
+        apagarOnda();
+        ok({ blob: new Blob(this.trozos, { type: 'audio/webm' }) });
+      };
+      this.rec.stop();
+    });
+  },
+};
+
+$('btnRec').onclick = async () => {
+  if (!API) return avisar('Falta configurar la URL del servidor en Ajustes.');
+  if (Grabador.activa) {
+    $('btnRec').dataset.on = 'false';
+    await transcribir(await Grabador.detener());
+    return;
+  }
+  try {
+    await Grabador.iniciar();
+    $('btnRec').dataset.on = 'true';
+    avisar('');
+  } catch {
+    avisar(NATIVO
+      ? 'Android negó el micrófono. Actívalo en Ajustes del sistema → EstudiaPro → Permisos.'
+      : 'No se pudo abrir el micrófono. Revisa los permisos del navegador.');
+  }
+};
+
+if (NATIVO) {
+  Nativa.addListener('avanceSubida', e => {
+    const b = $('barra');
+    if (b) b.style.width = e.porcentaje + '%';
+  });
+}
+
+function barraProgreso(texto) {
+  $('progreso').innerHTML = `
+    <div style="margin-top:16px">
+      <div style="font:400 13px var(--mono);color:var(--tinta-3);margin-bottom:8px">${texto}</div>
+      <div class="barra-sub"><i id="barra"></i></div>
+    </div>`;
+}
+
+async function transcribir(r) {
+  if (!API) return avisar('Falta configurar la URL del servidor en Ajustes.');
+  const titulo = $('titulo').value || `Clase del ${new Date().toLocaleDateString('es-MX')}`;
+  const mb = ((r.bytes ?? r.blob?.size ?? 0) / 1024 / 1024).toFixed(1);
+  barraProgreso(`Subiendo ${mb} MB…`);
+  try {
+    let s;
+    if (r.ruta) {
+      const res = await Nativa.subir({
+        ruta: r.ruta, url: `${API}/api/transcribir`, token: TOKEN,
+        titulo, materia: $('materia').value,
+      });
+      barraProgreso('Transcribiendo. Una clase de una hora tarda unos minutos…');
+      $('barra').style.width = '100%';
+      s = JSON.parse(res.respuesta);
+    } else {
+      const fd = new FormData();
+      fd.append('audio', r.blob || r, r.blob ? 'clase.webm' : (r.name || 'audio'));
+      fd.append('titulo', titulo);
+      fd.append('materia', $('materia').value);
+      const resp = await fetch(`${API}/api/transcribir`, {
+        method: 'POST', headers: { 'x-app-token': TOKEN }, body: fd,
+      });
+      s = await resp.json();
+      if (!resp.ok) throw new Error(s.error || 'Falló la transcripción');
+    }
+    if (r.ruta) await Nativa.borrar({ ruta: r.ruta });
+    $('progreso').innerHTML = '';
+    await cargarSesiones();
+    await verPendientes();
+    abrir(s.id);
+  } catch (e) {
+    $('progreso').innerHTML = '';
+    avisar(e.message + (r.ruta ? ' La grabación sigue guardada en el teléfono.' : ''));
+    await verPendientes();
+  }
+}
+
+async function verPendientes() {
+  if (!NATIVO) return;
+  const { archivos } = await Nativa.pendientes();
+  const caja = $('pendientes');
+  if (!archivos.length) { caja.innerHTML = ''; return; }
+  caja.innerHTML = `<div class="rotulo"><span>Sin transcribir</span></div>` +
+    archivos.map(a => `
+      <div class="pend">
+        <div>
+          <div style="font-weight:600;font-size:14.5px">${new Date(a.fecha).toLocaleString('es-MX', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>
+          <div style="font:400 11.5px var(--mono);color:var(--tinta-3)">${(a.bytes / 1024 / 1024).toFixed(1)} MB</div>
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="btn chico" data-sube="${a.ruta}">Transcribir</button>
+          <button class="btn fantasma chico" data-tira="${a.ruta}">Borrar</button>
+        </div>
+      </div>`).join('');
+  caja.querySelectorAll('[data-sube]').forEach(b => b.onclick = () =>
+    transcribir({ ruta: b.dataset.sube, bytes: 0 }));
+  caja.querySelectorAll('[data-tira]').forEach(b => b.onclick = async () => {
+    if (!confirm('Se borra la grabación del teléfono. No se puede recuperar.')) return;
+    await Nativa.borrar({ ruta: b.dataset.tira });
+    verPendientes();
+  });
+}
+
+$('btnAudio').onclick = () => {
+  const f = $('archAudio').files[0];
+  if (!f) return avisar('Elige un archivo de audio primero.');
+  transcribir(f);
+};
+
+$('btnPdf').onclick = async () => {
+  const f = $('archPdf').files[0];
+  if (!f) return avisar('Elige un PDF primero.');
+  cargando('progreso', 'Leyendo el PDF…');
+  try {
+    const fd = new FormData();
+    fd.append('archivo', f);
+    fd.append('titulo', $('titulo').value);
+    fd.append('materia', $('materia').value);
+    const s = await api('/api/sesion/pdf', { method: 'POST', body: fd });
+    $('progreso').innerHTML = '';
+    await cargarSesiones(); abrir(s.id);
+  } catch (e) { $('progreso').innerHTML = ''; avisar(e.message); }
+};
+
+/* ───────────────────── Subtítulos de YouTube ──────────────────────── */
+async function traerSubtitulos(idVideo) {
+  const r = await Cap.Plugins.Extractor.subtitulos({ video: idVideo });
+  const d = JSON.parse(r.json);
+  if (d.error || !d.texto || d.texto.length < 120) {
+    return { texto: '', titulo: d.titulo || '' };
+  }
+  return { texto: d.texto, titulo: d.titulo || '' };
+}
+
+$('btnLink').onclick = async () => {
+  const url = $('url').value.trim();
+  if (!url) return avisar('Pega una URL primero.');
+  const idYT = (url.match(/(?:v=|youtu\.be\/|shorts\/)([\w-]{11})/) || [])[1];
+  cargando('progreso', idYT ? 'Analizando el video…' : 'Trayendo el contenido…');
+  try {
+    const cuerpo = { url, titulo: $('titulo').value, materia: $('materia').value };
+    if (idYT && NATIVO) {
+      const sub = await traerSubtitulos(idYT);
+      cuerpo.texto_cliente = sub.texto;
+      cuerpo.titulo_cliente = sub.titulo;
+      if (!sub.texto) cargando('progreso', 'Investigando el tema en internet…');
+    }
+    const s = await api('/api/sesion/link', { method: 'POST', body: JSON.stringify(cuerpo) });
+    $('progreso').innerHTML = '';
+    $('url').value = '';
+    await cargarSesiones(); abrir(s.id);
+  } catch (e) { $('progreso').innerHTML = ''; avisar(e.message); }
+};
+
+$('btnTexto').onclick = async () => {
+  const texto = $('pegado').value.trim();
+  if (texto.length < 120) return avisar('Pega al menos un par de párrafos.');
+  try {
+    const s = await api('/api/sesion/texto', {
+      method: 'POST',
+      body: JSON.stringify({ titulo: $('titulo').value || 'Texto pegado', materia: $('materia').value, texto }),
+    });
+    $('pegado').value = '';
+    await cargarSesiones(); abrir(s.id);
+  } catch (e) { avisar(e.message); }
+};
+
+/* ────────────────────── Lista de sesiones ─────────────────────────── */
+let sesiones = [], actual = null;
+const ICONO = { audio: '🎙', pdf: '📄', link: '🔗', video: '▶️', web: '🌐', texto: '✍️' };
+const NOMBRE = { audio: 'Clase', pdf: 'PDF', link: 'Artículo', video: 'Video', web: 'Investigado', texto: 'Texto' };
+const TABS = [
+  { id: 'notas', et: 'Notas', ic: '📓' },
+  { id: 'resumen', et: 'Resumen', ic: '⚡' },
+  { id: 'quiz', et: 'Quiz', ic: '✅' },
+  { id: 'flashcards', et: 'Tarjetas', ic: '🃏' },
+  { id: 'podcast', et: 'Podcast', ic: '🎧' },
+];
+
+function anillo(pct) {
+  const c = 2 * Math.PI * 14;
+  return `<div class="avance">
+    <svg width="34" height="34" viewBox="0 0 34 34">
+      <circle cx="17" cy="17" r="14" fill="none" stroke="var(--sup2)" stroke-width="3"/>
+      <circle cx="17" cy="17" r="14" fill="none" stroke="var(--marca)" stroke-width="3"
+        stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - pct / 100)}"/>
+    </svg><b>${pct}</b></div>`;
+}
+
+async function cargarSesiones() {
+  try {
+    sesiones = await api('/api/sesiones');
+    $('estado').textContent = 'listo';
+    $('estado').className = 'chip ok';
+  } catch (e) {
+    $('estado').textContent = 'sin conexión';
+    $('estado').className = 'chip';
+    return avisar(e.message.includes('Token') ? 'Token inválido. Ábrelo en Ajustes.' : e.message);
+  }
+  $('conteo').textContent = sesiones.length || '';
+  $('lista').innerHTML = sesiones.length ? sesiones.map(s => {
+    const pct = Math.round(((s.listos || []).length / TABS.length) * 100);
+    return `<div class="tarjeta-sesion">
+      ${anillo(pct)}
+      <button class="ts-cuerpo" data-id="${s.id}">
+        <div class="ts-titulo">${esc(s.titulo)}</div>
+        <div class="ts-meta">
+          <span>${ICONO[s.fuente] || ''} ${NOMBRE[s.fuente] || s.fuente}</span>
+          <span class="punto"></span>
+          <span>${s.palabras.toLocaleString('es-MX')} palabras</span>
+          ${s.materia ? `<span class="punto"></span><span>${esc(s.materia)}</span>` : ''}
+        </div>
+      </button>
+      <button class="tirar" data-tirar="${s.id}" aria-label="Borrar">×</button>
+    </div>`;
+  }).join('')
+    : `<div class="vacio"><span class="emo">📚</span>
+       <p>Todavía no hay nada.<br>Graba una clase, sube un PDF o pega un link para empezar.</p></div>`;
+
+  document.querySelectorAll('.ts-cuerpo').forEach(b => b.onclick = () => abrir(b.dataset.id));
+  document.querySelectorAll('[data-tirar]').forEach(b => b.onclick = async () => {
+    const id = b.dataset.tirar;
+    const s = sesiones.find(x => String(x.id) === String(id));
+    if (!confirm(`¿Borrar "${s?.titulo || 'esta sesión'}"?\n\nSe van también sus notas, quiz y tarjetas.`)) return;
+    try {
+      await api(`/api/sesion/${id}`, { method: 'DELETE' });
+      if (String(actual) === String(id)) volverInicio();
+      await cargarSesiones();
+    } catch (e) { avisar(e.message); }
+  });
+}
+
+/* ──────────────────────── Vista de sesión ─────────────────────────── */
+let datos = null, tab = 'notas';
+
+function volverInicio() {
+  actual = null;
+  $('sesion').classList.add('oculto');
+  $('inicio').classList.remove('oculto');
+  $('navAbajo').classList.remove('visible');
+  $('volver').style.display = 'none';
+  avisar('');
+}
+$('volver').onclick = volverInicio;
+
+async function abrir(id) {
+  actual = String(id); avisar('');
+  $('inicio').classList.add('oculto');
+  $('sesion').classList.remove('oculto');
+  $('volver').style.display = 'block';
+  window.scrollTo(0, 0);
+  cargando('contenido', 'Abriendo…');
+  try {
+    datos = await api(`/api/sesion/${id}`);
+  } catch (e) { return avisar(e.message); }
+
+  $('sTitulo').textContent = datos.titulo;
+  $('sMeta').innerHTML = [
+    `${ICONO[datos.fuente] || ''} ${NOMBRE[datos.fuente] || datos.fuente}`,
+    `${datos.palabras.toLocaleString('es-MX')} palabras`,
+    new Date(datos.creado).toLocaleDateString('es-MX', { day: 'numeric', month: 'long' }),
+    datos.materia,
+  ].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join('<span class="punto"></span>');
+
+  $('navAbajo').classList.add('visible');
+  $('navAbajo').innerHTML = TABS.map(t => `
+    <button role="tab" data-t="${t.id}" aria-selected="${t.id === tab}">
+      <i>${t.ic}</i>${t.et}${datos.artefactos[t.id] ? '<span class="listo-pt"></span>' : ''}
+    </button>`).join('');
+  $('navAbajo').querySelectorAll('button').forEach(b => b.onclick = () => {
+    tab = b.dataset.t; window.scrollTo({ top: 0, behavior: 'smooth' }); pintar();
+  });
+
+  actualizarAvance();
+  pintar();
+}
+
+function actualizarAvance() {
+  const hechos = TABS.filter(t => datos.artefactos[t.id]).length;
+  const pct = Math.round((hechos / TABS.length) * 100);
+  $('barraAvance').style.width = pct + '%';
+  $('avanceTxt').textContent = `${hechos} de ${TABS.length} listos`;
+  $('avancePct').textContent = pct + '%';
+}
+
+document.addEventListener('click', e => {
+  if (e.target.dataset?.gen) generar(e.target.dataset.gen, e.target.dataset.rehacer === '1');
+});
+
+async function generar(tipo, rehacer) {
+  cargando('contenido', tipo === 'podcast'
+    ? 'Escribiendo el guion y grabando las voces.<br>Esto tarda unos minutos…'
+    : 'Preparando tu material…');
+  try {
+    if (tipo === 'podcast') {
+      const d = await api('/api/podcast', { method: 'POST', body: JSON.stringify({ sesion_id: actual }) });
+      datos.audio = d.audio;
+      datos.artefactos = (await api(`/api/sesion/${actual}`)).artefactos;
+    } else {
+      const d = await api('/api/generar', { method: 'POST', body: JSON.stringify({ sesion_id: actual, tipo, rehacer }) });
+      datos.artefactos[tipo] = d.contenido;
+    }
+    $('navAbajo').querySelectorAll('button').forEach(b => {
+      if (datos.artefactos[b.dataset.t] && !b.querySelector('.listo-pt')) {
+        b.insertAdjacentHTML('beforeend', '<span class="listo-pt"></span>');
+      }
+    });
+    actualizarAvance();
+    pintar();
+  } catch (e) { pintar(); avisar(e.message); }
+}
+
+function pintar() {
+  $('navAbajo').querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.t === tab));
+  const c = $('contenido'), a = datos.artefactos[tab];
+  const meta = TABS.find(t => t.id === tab);
+
+  if (!a && !(tab === 'podcast' && datos.audio)) {
+    c.innerHTML = `<div class="vacio">
+      <span class="emo">${meta.ic}</span>
+      <p>Genera ${meta.et.toLowerCase()} de esta sesión.</p>
+      <button class="btn" data-gen="${tab}">Generar ${meta.et.toLowerCase()}</button>
+    </div>`;
+    return;
+  }
+
+  if (tab === 'notas') return pintarNotas(c, a);
+  if (tab === 'resumen') return pintarResumen(c, a);
+  if (tab === 'quiz') return pintarQuiz(c, a.preguntas);
+  if (tab === 'flashcards') return pintarCartas(c, a.tarjetas);
+  if (tab === 'podcast') return pintarPodcast(c, a);
+}
+
+/* ── Notas: camino de secciones ── */
+let seccionAbierta = null;
+const vistas = new Set();
+
+function partirSecciones(markdown) {
+  const partes = markdown.split(/^## /m).filter(x => x.trim());
+  if (partes.length < 2) return [{ titulo: 'Contenido', cuerpo: markdown }];
+  return partes.map(p => {
+    const salto = p.indexOf('\n');
+    return {
+      titulo: (salto < 0 ? p : p.slice(0, salto)).trim(),
+      cuerpo: salto < 0 ? '' : p.slice(salto + 1).trim(),
+    };
+  });
+}
+
+function pintarNotas(c, a) {
+  const secs = partirSecciones(a.markdown);
+
+  if (seccionAbierta !== null && secs[seccionAbierta]) {
+    const s = secs[seccionAbierta];
+    vistas.add(seccionAbierta);
+    c.innerHTML = `
+      <button class="btn fantasma chico" id="volSec" style="margin-bottom:18px">‹ Todas las secciones</button>
+      <div class="nodo-n" style="margin-bottom:8px">Sección ${seccionAbierta + 1} de ${secs.length}</div>
+      <h2 style="font:600 24px/1.25 var(--serif);margin-bottom:18px">${esc(s.titulo)}</h2>
+      <div class="notas">${md(s.cuerpo)}</div>
+      <div class="mandos" style="margin-top:28px">
+        ${seccionAbierta > 0 ? '<button class="btn fantasma" id="secAnt">‹ Anterior</button>' : ''}
+        ${seccionAbierta < secs.length - 1
+          ? '<button class="btn" id="secSig">Siguiente ›</button>'
+          : '<button class="btn" id="secFin">Terminar</button>'}
+      </div>`;
+    $('volSec').onclick = () => { seccionAbierta = null; pintar(); };
+    if ($('secAnt')) $('secAnt').onclick = () => { seccionAbierta--; window.scrollTo(0, 0); pintar(); };
+    if ($('secSig')) $('secSig').onclick = () => { seccionAbierta++; window.scrollTo(0, 0); pintar(); };
+    if ($('secFin')) $('secFin').onclick = () => { seccionAbierta = null; window.scrollTo(0, 0); pintar(); };
+    return;
+  }
+
+  const primeraPendiente = secs.findIndex((_, i) => !vistas.has(i));
+  c.innerHTML = `<div class="camino">` + secs.map((s, i) => {
+    const estado = vistas.has(i) ? 'hecho' : (i === primeraPendiente ? 'activo' : 'pendiente');
+    return `<div class="nodo ${estado}">
+      <div class="bolita">${vistas.has(i) ? '✓' : i + 1}</div>
+      <button class="nodo-txt" data-sec="${i}">
+        <div class="nodo-n">Sección ${i + 1}</div>
+        <div class="nodo-t">${esc(s.titulo)}</div>
+      </button>
+    </div>`;
+  }).join('') + `</div>
+    <div style="display:flex;gap:9px;margin-top:22px">
+      <button class="btn fantasma chico" data-gen="notas" data-rehacer="1">Rehacer</button>
+      <button class="btn fantasma chico" id="copiar">Copiar todo</button>
+    </div>`;
+
+  c.querySelectorAll('[data-sec]').forEach(b => b.onclick = () => {
+    seccionAbierta = +b.dataset.sec; window.scrollTo(0, 0); pintar();
+  });
+  $('copiar').onclick = () => {
+    navigator.clipboard.writeText(a.markdown).catch(() => {});
+    $('copiar').textContent = 'Copiado';
+    setTimeout(() => $('copiar').textContent = 'Copiar todo', 1600);
+  };
+}
+
+function pintarResumen(c, a) {
+  c.innerHTML = `<div class="notas">${md(a.markdown)}</div>
+    <div style="display:flex;gap:9px;margin-top:26px">
+      <button class="btn fantasma chico" data-gen="resumen" data-rehacer="1">Rehacer</button>
+      <button class="btn fantasma chico" id="copiar2">Copiar</button>
+    </div>`;
+  $('copiar2').onclick = () => {
+    navigator.clipboard.writeText(a.markdown).catch(() => {});
+    $('copiar2').textContent = 'Copiado';
+    setTimeout(() => $('copiar2').textContent = 'Copiar', 1600);
+  };
+}
+
+/* ── Quiz ── */
+function pintarQuiz(c, preguntas) {
+  let bien = 0, hechas = 0;
+  c.innerHTML = `<div id="qs"></div>
+    <div class="marcador">
+      <span id="score">0 de ${preguntas.length}</span>
+      <button class="btn fantasma chico" data-gen="quiz" data-rehacer="1">Otro quiz</button>
+    </div>`;
+  $('qs').innerHTML = preguntas.map((p, i) => `
+    <div class="preg" data-i="${i}">
+      <div class="n">Pregunta ${i + 1} de ${preguntas.length}</div>
+      <div class="q">${esc(p.pregunta)}</div>
+      ${p.opciones.map((o, j) => `<button class="op" data-j="${j}">${esc(o)}</button>`).join('')}
+      <div class="porque oculto">${esc(p.porque || '')}</div>
+    </div>`).join('');
+
+  $('qs').querySelectorAll('.preg').forEach((caja, i) => {
+    caja.querySelectorAll('.op').forEach(op => {
+      op.onclick = () => {
+        const j = +op.dataset.j, ok = j === preguntas[i].correcta;
+        caja.querySelectorAll('.op').forEach(x => {
+          x.disabled = true;
+          if (+x.dataset.j === preguntas[i].correcta) x.classList.add('bien');
+        });
+        if (!ok) op.classList.add('mal');
+        caja.querySelector('.porque').classList.remove('oculto');
+        hechas++; if (ok) bien++;
+        $('score').textContent = `${bien} de ${preguntas.length}`
+          + (hechas === preguntas.length ? ' · terminado' : '');
+      };
+    });
+  });
+}
+
+/* ── Flashcards ── */
+function pintarCartas(c, tarjetas) {
+  let i = 0, volteada = false;
+  c.innerHTML = `<div class="baraja">
+      <div class="carta" id="carta" data-volteada="false" role="button" tabindex="0">
+        <div class="cara-cont">
+          <div class="cara"><div class="tema" id="tema"></div><div class="txt" id="frente"></div>
+            <div class="pista">Toca para ver la respuesta</div></div>
+          <div class="cara atras"><div class="txt" id="reverso"></div></div>
+        </div>
+      </div>
+      <div class="pos" id="pos"></div>
+      <div class="mandos">
+        <button class="btn fantasma" id="fallo">No la sabía</button>
+        <button class="btn" id="acierto">La sabía</button>
+      </div>
+      <div class="mandos">
+        <button class="btn fantasma chico" id="ant" style="flex:1">‹ Anterior</button>
+        <button class="btn fantasma chico" id="sig" style="flex:1">Siguiente ›</button>
+      </div>
+      <button class="btn fantasma chico" data-gen="flashcards" data-rehacer="1">Rehacer baraja</button>
+    </div>`;
+
+  const mostrar = () => {
+    volteada = false;
+    $('carta').dataset.volteada = 'false';
+    setTimeout(() => {
+      $('frente').textContent = tarjetas[i].frente;
+      $('reverso').textContent = tarjetas[i].reverso;
+      $('tema').textContent = tarjetas[i].tema || '';
+    }, 180);
+    $('pos').textContent = `${i + 1} / ${tarjetas.length}`;
+  };
+  const voltear = () => { volteada = !volteada; $('carta').dataset.volteada = volteada; };
+  const mover = d => { i = (i + d + tarjetas.length) % tarjetas.length; mostrar(); };
+
+  $('carta').onclick = voltear;
+  $('carta').onkeydown = e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); voltear(); } };
+  $('ant').onclick = () => mover(-1);
+  $('sig').onclick = () => mover(1);
+  $('acierto').onclick = () => { calificar(i, true); mover(1); };
+  $('fallo').onclick = () => { calificar(i, false); mover(1); };
+  mostrar();
+}
+
+function calificar(indice, acerto) {
+  api('/api/repaso', { method: 'POST', body: JSON.stringify({ sesion_id: actual, indice, acerto }) }).catch(() => {});
+}
+
+/* ── Podcast ── */
+function pintarPodcast(c, a) {
+  const turnos = a?.turnos || [];
+  c.innerHTML = `<div class="pod">
+      ${datos.audio
+        ? `<audio controls src="${datos.audio.startsWith('http') ? datos.audio : API + datos.audio}"></audio>`
+        : `<div class="vacio" style="margin-bottom:22px">
+             <span class="emo">🎧</span>
+             <p>El guion está listo.<br>Genera el audio para escucharlo en el camino.</p>
+             <button class="btn" data-gen="podcast">Grabar el audio</button>
+           </div>`}
+      <div class="rotulo"><span>Guion</span></div>
+      ${turnos.map(t => `
+        <div class="turno ${t.voz === 'B' ? 'b' : ''}">
+          <span class="voz">${t.voz === 'B' ? 'Dalia' : 'Jorge'}</span>
+          <span>${esc(t.texto)}</span>
+        </div>`).join('')}
+    </div>`;
+}
+
+/* ── Arranque ── */
+(async function arranque() {
+  await cargarSesiones();
+  if (!NATIVO) return;
+  await verPendientes();
+  const e = await Nativa.estado();
+  if (e.grabando) {
+    Grabador.activa = true;
+    $('btnRec').dataset.on = 'true';
+    Grabador.pulso = setInterval(async () => {
+      const x = await Nativa.estado();
+      if (!x.grabando) return;
+      $('reloj').textContent = reloj(x.segundos);
+      empujarNivel(x.nivel * 2.6);
+    }, 110);
+  }
+})();
+
+document.addEventListener('resume', () => { if (NATIVO) verPendientes(); });
+</script>
+</body>
+</html>

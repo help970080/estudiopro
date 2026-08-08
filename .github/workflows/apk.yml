@@ -1,0 +1,126 @@
+name: APK
+
+# Compila el APK en la nube. No necesitas Android Studio.
+#
+#   push a main tocando app/**  → APK debug como artifact (30 días)
+#   tag v1.0.0, v1.1.0, …       → APK firmado publicado en Releases
+#   botón "Run workflow"        → cuando quieras
+#
+# Android exige que los .java vivan en una ruta que refleje el paquete
+# (java/uk/legaxia/estudia/). En el repo están planos en app/nativo/ y este
+# workflow los acomoda. Así no mantienes seis niveles de carpetas a mano.
+
+on:
+  push:
+    branches: [main]
+    paths: ['app/**', '.github/workflows/apk.yml']
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Preparar carpeta web
+        # capacitor.config.json apunta a www/, que no está en el repo:
+        # solo hay un index.html suelto.
+        run: |
+          mkdir -p www
+          cp index.html www/index.html
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Generar proyecto Android
+        run: npx cap add android
+
+      - name: Acomodar archivos nativos
+        # cap add escribe un MainActivity y un manifest genéricos. Estos los
+        # reemplazan: el manifest trae los permisos de micrófono y el servicio,
+        # y MainActivity registra el plugin de grabación.
+        run: |
+          DEST=android/app/src/main
+          mkdir -p $DEST/java/uk/legaxia/estudia $DEST/res/xml
+          cp nativo/AndroidManifest.xml    $DEST/AndroidManifest.xml
+          cp nativo/MainActivity.java      $DEST/java/uk/legaxia/estudia/
+          cp nativo/GrabadoraPlugin.java   $DEST/java/uk/legaxia/estudia/
+          cp nativo/ExtractorPlugin.java   $DEST/java/uk/legaxia/estudia/
+          cp nativo/ServicioGrabacion.java $DEST/java/uk/legaxia/estudia/
+          cp nativo/file_paths.xml         $DEST/res/xml/
+
+          echo "--- verificación ---"
+          grep -q "FOREGROUND_SERVICE_MICROPHONE" $DEST/AndroidManifest.xml \
+            && echo "manifest: permisos ok" || (echo "FALLO: manifest sin reemplazar" && exit 1)
+          grep -q "registerPlugin(GrabadoraPlugin" $DEST/java/uk/legaxia/estudia/MainActivity.java \
+            && echo "plugin grabadora: ok" || (echo "FALLO: MainActivity sin reemplazar" && exit 1)
+          grep -q "registerPlugin(ExtractorPlugin" $DEST/java/uk/legaxia/estudia/MainActivity.java \
+            && echo "plugin extractor: ok" || (echo "FALLO: falta ExtractorPlugin" && exit 1)
+          test -f $DEST/java/uk/legaxia/estudia/ExtractorPlugin.java \
+            && echo "ExtractorPlugin.java: copiado" || (echo "FALLO: no se copió" && exit 1)
+
+      - name: Sincronizar web
+        run: npx cap sync android
+
+      - name: Preparar gradlew
+        run: chmod +x android/gradlew
+
+      # ── Debug: instalable directo, sin firma ──────────────────────────
+      - name: Compilar debug
+        if: "!startsWith(github.ref, 'refs/tags/')"
+        run: cd android && ./gradlew assembleDebug --no-daemon
+
+      - name: Guardar debug
+        if: "!startsWith(github.ref, 'refs/tags/')"
+        uses: actions/upload-artifact@v4
+        with:
+          name: EstudiaPro-debug
+          path: app/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+
+      # ── Release: firmado, solo al crear un tag ────────────────────────
+      - name: Restaurar keystore
+        if: startsWith(github.ref, 'refs/tags/')
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/llave.jks
+
+      - name: Configurar firma
+        if: startsWith(github.ref, 'refs/tags/')
+        run: python3 nativo/firmar.py
+
+      - name: Compilar release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          RUTA_LLAVE: llave.jks
+          CLAVE_ALMACEN: ${{ secrets.KEYSTORE_PASSWORD }}
+          ALIAS_LLAVE: ${{ secrets.KEY_ALIAS }}
+          CLAVE_LLAVE: ${{ secrets.KEY_PASSWORD }}
+        run: cd android && ./gradlew assembleRelease --no-daemon
+
+      - name: Publicar release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app/android/app/build/outputs/apk/release/app-release.apk
+          body: |
+            Instala el APK con orígenes desconocidos habilitado.
+
+            Antes de la primera clase: Ajustes → Batería → EstudiaPro → Sin restricciones.

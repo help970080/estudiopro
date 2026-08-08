@@ -1,0 +1,11 @@
+node_modules/
+.env
+*.log
+
+# Lo genera cap add android en cada compilación
+app/android/
+app/www/
+
+# Nunca subir la llave de firma
+*.jks
+*.keystore

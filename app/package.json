@@ -1,0 +1,17 @@
+{
+  "name": "estudiapro-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "sync": "cap sync android",
+    "abrir": "cap open android",
+    "apk": "cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/core": "^6.1.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.2"
+  }
+}

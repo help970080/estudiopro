@@ -1,0 +1,16 @@
+{
+  "appId": "uk.legaxia.estudia",
+  "appName": "EstudiaPro",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
